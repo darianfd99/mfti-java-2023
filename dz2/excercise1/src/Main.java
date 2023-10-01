@@ -1,4 +1,4 @@
-import Trade.Trade;
+import Car.Car;
 
 import java.io.*;
 
@@ -14,16 +14,15 @@ public class Main {
         String tradeTypeString = "";
         String priceString = "";
         while((line = reader.readLine()) != null){
-            if(line.contains("tradeType=")){
+            if(line.contains("carType=")){
                 tradeTypeString = line.substring(line.indexOf('=') + 1);
             }
             if (line.contains("price=")){
                 priceString = line.substring(line.indexOf('=')+1);
             }
         }
-
-        Float price = Float.parseFloat(priceString);
-        Trade trade = new Trade(tradeTypeString, price);
-        System.out.println(trade.toString());
+        float price = Float.parseFloat(priceString);
+        Car car = Car.CreateCar(tradeTypeString, price);
+        System.out.println(car.toString());
     }
 }
