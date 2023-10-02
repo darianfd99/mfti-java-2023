@@ -50,9 +50,9 @@ public class Main {
         Collections.reverse(lines);
 
         Scanner scanner = new Scanner(System.in);
-        System.out.print("\n\nEnter a number of the line: ");
+        System.out.print("\n\ntask6: Enter a number of the line: ");
         int lineNumber = Integer.parseInt(scanner.nextLine());
-        System.out.printf("The line %d is: ", lineNumber);
+        System.out.printf("task6: The line %d is: ", lineNumber);
         System.out.println(lines.get(lineNumber - 1));
 
     }
