@@ -1,5 +1,6 @@
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class BeanUtils {
 /**
@@ -22,19 +23,31 @@ public class BeanUtils {
         Method[] fromMethods  = from.getClass().getMethods();
         Method[] toMethods  = to.getClass().getMethods();
 
-        for (Method fromMethod : fromMethods){
-            if (!isGetter(fromMethod)) continue;
-            if(!fromMethod.canAccess(from)) continue;
+        Arrays.stream(fromMethods)
+                .filter(method -> isValidGetterForAssigning(method, from))
+                .forEach(getter -> assignGetter(getter, toMethods, from, to));
+    }
+    private static void invokeAssign(Method getter, Method setter, Object from, Object to){
+        try {
+            Object returnGetValue = getter.invoke(from);
+            setter.invoke(to, returnGetValue);
+        } catch (Exception ignored){}
+    }
 
-            for(Method toMethod : toMethods){
-                if(!isSetter(toMethod)) continue;
-                if(!toMethod.canAccess(to)) continue;
-                if(!(extractFieldToGetOrSet(fromMethod.getName()).equals(extractFieldToGetOrSet(toMethod.getName())))) continue;
-                if (!toMethod.getParameterTypes()[0].isAssignableFrom(fromMethod.getReturnType())) continue;
-                Object returnGetValue = fromMethod.invoke(from);
-                toMethod.invoke(to, returnGetValue);
-            }
-        }
+    private static void assignGetter(Method getter, Method[] toMethods, Object fromObject ,Object toObject){
+        Arrays.stream(toMethods)
+                .filter(toMethod -> isValidAssigning(getter, toMethod, toObject))
+                .forEach(setter -> invokeAssign(getter, setter, fromObject, toObject));
+    }
+
+    private static boolean isValidGetterForAssigning(Method m, Object o){
+        return m.canAccess(o) && isGetter(m);
+    }
+    private static boolean isValidAssigning(Method from, Method to, Object toObject){
+        if(!isSetter(to)) return false;
+        if(!to.canAccess(toObject)) return false;
+        if(!(extractFieldToGetOrSet(from.getName()).equals(extractFieldToGetOrSet(to.getName())))) return false;
+        return to.getParameterTypes()[0].isAssignableFrom(from.getReturnType());
     }
 
     private static String extractFieldToGetOrSet(String methodName){
@@ -42,8 +55,8 @@ public class BeanUtils {
     }
 
     public static boolean isGetter(Method method){
-        if(!method.getName().startsWith("get"))      return false;
-        if(method.getParameterTypes().length != 0)   return false;
+        if(!method.getName().startsWith("get")) return false;
+        if(method.getParameterTypes().length != 0) return false;
         return !void.class.equals(method.getReturnType());
     }
 
