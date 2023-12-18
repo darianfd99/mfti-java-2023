@@ -10,7 +10,14 @@ import static java.lang.Math.min;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        FileProcessor fp = new FileProcessor("words.txt");
+        ArrayList<String> lines = new ArrayList<>();
+
+        BufferedReader reader = new BufferedReader(new FileReader("words.txt"));
+        String line = "";
+        while ((line = reader.readLine()) != null) {
+            lines.add(line);
+        }
+        FileProcessor fp = new FileProcessor(lines);
         fp.doPipeline();
     }
 }

@@ -10,14 +10,8 @@ import static java.lang.Math.min;
 
 public class FileProcessor {
     private final ArrayList<String> lines;
-    FileProcessor(String pathToFile) throws IOException {
-        lines = new ArrayList<>();
-
-        BufferedReader reader = new BufferedReader(new FileReader(pathToFile));
-        String line = "";
-        while ((line = reader.readLine()) != null) {
-            lines.add(line);
-        }
+    FileProcessor(ArrayList<String> lines) {
+        this.lines = lines;
     }
 
     public void printWordsStartingWithN(){
