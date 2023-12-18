@@ -2,7 +2,7 @@ import java.io.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        String keyboardLetters = new String("qwertyuiopasdfghjklzxcvbnm");
+        String keyboardLetters = "qwertyuiopasdfghjklzxcvbnm";
         File file = new File("input.txt");
         BufferedReader br = new BufferedReader(new FileReader(file));
         String st;
@@ -13,8 +13,7 @@ public class Main {
         if(st != null){
             letter = st.charAt(0);
         }else{
-            IOException IOException = new IOException("error: invalid letter");
-            throw IOException;
+            throw new IOException("error: invalid letter");
         }
         br.close();
 
